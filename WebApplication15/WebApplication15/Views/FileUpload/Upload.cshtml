@@ -1,0 +1,17 @@
+﻿@model WebApplication15.Models.FileUploadViewModel
+@{
+    ViewBag.Title = "Upload";
+}
+
+<h2>Upload</h2>
+@using (Html.BeginForm("Upload","FileUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div>
+        @Html.LabelFor(model => model.File)
+        @Html.TextBoxFor(model => model.File, new { type = "file" })
+    </div>
+    <div>
+        <input type="submit" value="Upload" />
+    </div>
+}
+

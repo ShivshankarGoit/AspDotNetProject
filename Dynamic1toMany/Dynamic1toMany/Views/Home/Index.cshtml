@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Dynamic1toMany.Models.Order>
+
+@{
+    ViewData["Title"] = "Product";
+}
+
+<h1>Order Details</h1>
+<div class="container">
+    <p>
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Order Name</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                var rowSpan = order.OrderItems != null ? order.OrderItems.Count : 1;
+
+                if (order.OrderItems != null && order.OrderItems.Count > 0)
+                {
+                    var firstItem = true;
+
+                    foreach (var orderItem in order.OrderItems)
+                    {
+                        <tr>
+                            @if (firstItem)
+                            {
+                                firstItem = false;
+                                <td rowspan="@rowSpan">@Html.DisplayFor(modelItem => order.OrderName)</td>
+                            }
+                            <td>@Html.DisplayFor(modelItem => orderItem.ProductName)</td>
+                            <td>@Html.DisplayFor(modelItem => orderItem.Qiantity)</td>
+
+                            
+                                <td >
+                                    @Html.ActionLink("Edit", "Edit", new { id = order.OrderId }, new { @class = "btn btn-success" }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = order.OrderId }, new { @class = "btn btn-danger" })
+                                </td>
+                            
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => order.OrderName)</td>
+                        <td colspan="2">No products</td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = order.OrderId }, new { @class = "btn btn-success" }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = order.OrderId }, new { @class = "btn btn-danger" })
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

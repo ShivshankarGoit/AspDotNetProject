@@ -1,0 +1,73 @@
+﻿@model IEnumerable<OneToManyDynamic.Models.Product>
+
+@{
+    ViewData["Title"] = "Product";
+}
+
+<h1>Student Detail</h1>
+<div class="container">
+    <p>
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+
+    </p>
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th rowspan="2">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th rowspan="2">
+                @Html.DisplayNameFor(model => model.description)
+            </th>
+            <th rowspan="2">
+                @Html.DisplayNameFor(model => model.Acive)
+            </th>
+            <th colspan="2">
+                @Html.DisplayNameFor(model => model.Sizes)
+            </th>
+            <th rowspan="2">
+               Action
+            </th>
+        </tr>
+
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Acive)
+                </td>
+
+                @if (item.Sizes.Count > 0)
+                {
+                    foreach (var size in item.Sizes)
+                    {
+                        <td>@size.name</td>
+                        <td>@size.Prict</td>
+                    }
+                }
+                else
+                {
+                    <td></td>
+                    <td></td>
+                }
+
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-success" })
+
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger " })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

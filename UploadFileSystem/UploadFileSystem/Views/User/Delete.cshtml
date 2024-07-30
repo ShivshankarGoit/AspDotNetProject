@@ -1,0 +1,67 @@
+﻿@model UploadFileSystem.Models.User
+
+@{
+    ViewBag.Title = "Delete User";
+}
+
+<h2>Delete User</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            Current Image
+        </dt>
+        <dd>
+            @foreach (var file in Model.UserFiles)
+            {
+                
+                          
+                            
+                                <li>
+                                    @{
+                                        var fileExtension = Path.GetExtension(file.FilePath).ToLower();
+                                        var imageExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                                        var pdfExtension = ".pdf";
+                                        var docxExtension = ".docx";
+
+                                        if (imageExtensions.Contains(fileExtension))
+                                        {
+                                            <img src="@Url.Content(file.FilePath)" alt="@file.FileName" style="max-width: 100px; max-height: 100px;" />
+                                        }
+                                        else if (fileExtension == pdfExtension)
+                                        {
+                                            <a href="@Url.Content(file.FilePath)" target="_blank">View PDF</a>
+                                        }
+                                        else if (fileExtension == docxExtension)
+                                        {
+                                            <a href="@Url.Content(file.FilePath)" download="@file.FileName">Download DOCX</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Content(file.FilePath)" target="_blank">@file.FileName</a>
+                                        }
+
+
+                                    }
+                                </li>
+                          
+            }
+        </dd>
+    </dl>
+
+    <form action="@Url.Action("Delete", "User", new { id = Model.Id })" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" value="@Model.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </form>
+</div>

@@ -1,0 +1,19 @@
+﻿@model AreaApplication.Models.excellSheet
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@{
+    string urlToAreaOne = Url.Action("Index", "Database", new { area = "DatabaseToExcell" });
+}
+
+<a class="btn btn-success" href="@Url.Action("Index", "Database", new { area = "DatabaseToExcell" })" >Go to Area One</a>
+
+@{
+    string urlToAreaTwo = Url.Action("Index", "Excel", new { area = "ExceltoDatabase" });
+}
+
+<button onclick="location.href='@urlToAreaTwo'">Go to Area Two</button>
+@Html.ActionLink("Index for Area one", "RedirectArea", new {id=1}, new { @class = "btn btn-primary" })
+
+@Html.ActionLink("Index for Area Two", "RedirectArea", new { id = 2 }, new { @class = "btn btn-primary" })

@@ -1,0 +1,68 @@
+﻿@model UploadFileSystem.Models.User
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>User</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <h4>Files</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>FileName</th>
+                <th>FileType</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var file in Model.UserFiles)
+            {
+                <tr>
+                    <td>@file.FileName</td>
+                    <td>
+                        @{
+                            var fileExtension = Path.GetExtension(file.FilePath).ToLower();
+                            var imageExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                            var pdfExtension = ".pdf";
+                            var docxExtension = ".docx";
+
+                            if (imageExtensions.Contains(fileExtension))
+                            {
+                                <img src="@Url.Content(file.FilePath)"  style="max-width: 100px; max-height: 100px;" />
+                            }
+                            else if (fileExtension == pdfExtension)
+                            {
+                                <a href="@Url.Content(file.FilePath)" target="_blank">View PDF</a>
+                            }
+                            else if (fileExtension == docxExtension)
+                            {
+                                <a href="@Url.Content(file.FilePath)" download="@file.FileName">Download DOCX</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Content(file.FilePath)" target="_blank">@file.FileName</a>
+                            }
+                        }
+                  </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" }) |
+    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-success" })
+</p>

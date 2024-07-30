@@ -1,0 +1,47 @@
+﻿<div class="container">
+    <h2>Users Record</h2>
+    <p>
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+
+    </p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                
+                <th>
+                    Name
+                </th>
+                <th>
+                    Age
+                </th>
+                <th>
+                    State
+                </th>
+                <th>
+                    Country
+                </th>
+                <th>
+                    Action
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model)
+            {
+                <tr>
+
+                    <td>@product.Name</td>
+                    <td>@product.Age</td>
+                    <td>@product.State</td>
+                    <td>@product.Country</td>
+                    <td>
+                        @Html.ActionLink("Edit", "Update", new { id = product.EmployeeId }, new { @class = "btn btn-success" })
+                       
+                        @Html.ActionLink("Delete", "MultipleDelete", new { id = product.EmployeeId }, new { @class = "btn btn-danger " })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

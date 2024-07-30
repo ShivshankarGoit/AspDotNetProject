@@ -1,0 +1,98 @@
+﻿@model Dynamic1toMany.Models.OrderViewModel
+
+<h2>Create Order</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+   <div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.OrderName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.OrderName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.OrderName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+
+    <!-- Courses section - dynamic addition with jQuery -->
+    <div id="orderItems">
+        @for (int i = 0; i < Model.OrderItems.Count; i++)
+        {
+            <div class="form-group">
+                <label asp-for="OrderItems[i].ProductName"></label>
+                <input asp-for="OrderItems[i].ProductName" class="form-control" />
+                <span asp-validation-for="OrderItems[i].ProductName" class="text-danger"></span>
+
+                <label asp-for="OrderItems[i].Quantity"></label>
+                <input asp-for="OrderItems[i].Quantity" class="form-control" />
+                <span asp-validation-for="OrderItems[i].Quantity" class="text-danger"></span>
+
+                <button type="button" onclick="removeOrderItem(this)">Remove</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" onclick="addOrderItem()">Add Item</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+
+
+
+    
+ </div>
+
+}
+
+@**<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="OrderName"></label>
+        <input asp-for="OrderName" class="form-control" />
+        <span asp-validation-for="OrderName" class="text-danger"></span>
+    </div>
+
+    <div id="orderItems">
+        @for (int i = 0; i < Model.OrderItems.Count; i++)
+        {
+            <div class="form-group">
+                <label asp-for="OrderItems[i].ProductName"></label>
+                <input asp-for="OrderItems[i].ProductName" class="form-control" />
+                <span asp-validation-for="OrderItems[i].ProductName" class="text-danger"></span>
+
+                <label asp-for="OrderItems[i].Quantity"></label>
+                <input asp-for="OrderItems[i].Quantity" class="form-control" />
+                <span asp-validation-for="OrderItems[i].Quantity" class="text-danger"></span>
+
+                <button type="button" onclick="removeOrderItem(this)">Remove</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" onclick="addOrderItem()">Add Item</button>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>*@
+
+@section Scripts {
+    <script>
+        function addOrderItem() {
+            var index = $('#orderItems .form-group').length;
+            var orderItemHtml = `
+                        <div class="form-group">
+                            <label for="OrderItems_${index}__ProductName">Product Name</label>
+                            <input name="OrderItems[${index}].ProductName" class="form-control" />
+                            <label for="OrderItems_${index}__Quantity">Quantity</label>
+                            <input name="OrderItems[${index}].Quantity" class="form-control" />
+                            <button type="button" onclick="removeOrderItem(this)">Remove</button>
+                        </div>`;
+            $('#orderItems').append(orderItemHtml);
+        }
+
+        function removeOrderItem(button) {
+            $(button).closest('.form-group').remove();
+        }
+    </script>
+}

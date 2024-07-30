@@ -1,0 +1,28 @@
+﻿
+@{
+    ViewBag.Title = "Student";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Student</h2>
+<table class="table table-bordered ">
+    <tr>
+        <td>
+            Name:
+        </td>
+    </tr>
+
+    @if(ViewBag!=null){
+       foreach(var item in ViewBag.name)
+    {
+      <tr>
+          <td>
+
+             @item
+                     
+
+          </td>
+      </tr>
+    }
+    }
+</table>

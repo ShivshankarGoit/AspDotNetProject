@@ -1,0 +1,21 @@
+﻿@model IEnumerable<toUseLinqOperation.Models.productDetail>
+
+<h2>Expensive Products</h2>
+
+<table>
+    <tr>
+        <th>Name</th>
+       <th>Category</th>
+        <th>Price</th>
+        <th>Stock</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Name </td>
+           <td>@item.Category</td>
+            <td>@item.Price</td>
+            <td>@item.Stock</td>
+        </tr>
+    }
+</table>

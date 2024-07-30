@@ -1,0 +1,126 @@
+﻿@model OneToManyDynamic.Models.Product
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.description, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.description, new { @class = "form-control", rows = 4 })
+
+            @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div>
+        <input type="checkbox" name="Acive" value="true"  />
+    </div>
+
+
+
+    <!-- Courses section - dynamic addition with jQuery -->
+
+    <div id="dynamicFieldsContainer">
+
+        <!--<div class="form-group row">
+            <div class="col-md-3">
+                <label class="control-label">Name</label>
+                <input type="text" name="Name" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="control-label">Age</label>
+                <input type="text" name="Age" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="control-label">State</label>
+                <input type="text" name="State" class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <label class="control-label">Country</label>
+                <input type="text" name="Country" class="form-control" />
+            </div>
+        </div>-->
+    </div>
+
+    <button type="button" id="addField" class="btn btn-primary">Add Field</button>
+
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+
+}
+
+<!-- jQuery and Bootstrap scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+
+        var fieldIndex = 1; // To keep track of the number of fields
+
+        // Function to add a new field group
+        $("#addField").click(function () {
+            var newFieldGroup = `
+            <div class="form-group row" id="fieldGroup${fieldIndex}">
+                <input type="text" name= "Sizes.Index" value =${fieldIndex}>
+                <div class="col-md-3">
+                    <label class="control-label">Name</label>
+                    <input type="text" name="Sizes[${fieldIndex}].Name" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <label class="control-label">Price</label>
+                    <input type="text" name="Sizes[${fieldIndex}].Prict" class="form-control" />
+                </div>
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-danger removeField" data-id="${fieldIndex}">Remove</button>
+                </div>
+
+            </div>
+        `;
+
+
+            $("#dynamicFieldsContainer").append(newFieldGroup);
+            fieldIndex++;
+
+        });
+
+
+
+
+
+        // Function to remove a field group
+        $(document).on("click", ".removeField", function () {
+            var id = $(this).data("id");
+            $("#fieldGroup" + id).remove();
+        });
+
+
+    });
+</script>
+
+

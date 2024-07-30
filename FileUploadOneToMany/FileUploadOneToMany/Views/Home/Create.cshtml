@@ -1,0 +1,23 @@
+﻿@model FileUploadOneToMany.Models.ProductFile
+
+@{
+    ViewBag.Title = "Upload File";
+}
+
+<h2>Upload File</h2>
+
+@using (Html.BeginForm("Create", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id, new { Value = ViewBag.Id })
+
+<div class="form-group">
+    <label for="file">File</label>
+    <input type="file" id="file" name="file" class="form-control-file">
+    @Html.ValidationMessage("file", "", new { @class = "text-danger" })
+</div>
+
+    <button type="submit" class="btn btn-primary">Upload</button>
+}
+
+

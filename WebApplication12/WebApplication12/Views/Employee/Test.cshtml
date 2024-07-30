@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "Test";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body>
+    
+    <p>First Name: @Model.FirstName</p>
+    <p>Last Name: @Model.LastName</p>
+</body>
+
+<table class="table">
+    <thead>
+        <tr>
+            
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            
+            <td>@Model.FirstName</td>
+            <td>@Model.LastName</td>
+           
+    </tbody>
+  </table>

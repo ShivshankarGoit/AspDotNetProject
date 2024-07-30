@@ -1,0 +1,12 @@
+﻿@model ExcellData.Models.excellSheet
+@{
+    ViewBag.Title = "Upload";
+}
+
+@using (Html.BeginForm("Upload", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <input type="file" name="file" />
+    <input type="submit" value="Upload" />
+}
+
+

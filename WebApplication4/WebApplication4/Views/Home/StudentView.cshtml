@@ -1,0 +1,41 @@
+﻿@model IEnumerable<WebApplication4.Models.StudentViewModel>
+@{
+    ViewBag.Title = "StudentView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>StudentView</h2>
+
+@if (Model != null)
+            {
+                <table class="table table-bordered table-striped table-hover table-responsive">
+                    <thead>
+                        <tr>
+
+
+                            <td>ID</td>
+                            <td>Name</td>
+                            <td>Content</td>
+                            <td>Age</td>
+                            <td>Adminn Name</td>
+                        </tr>
+
+                    </thead>
+                    <tbody>
+                        @foreach(var item in Model)
+                        { 
+                            <tr>
+                                <td>@item.std_id</td>
+                                <td>@item.std_name</td>
+
+                                <td>@item.std_contact</td>
+
+                                <td>@item.std_age</td>
+                                <td>@item.ad_name</td>
+
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }

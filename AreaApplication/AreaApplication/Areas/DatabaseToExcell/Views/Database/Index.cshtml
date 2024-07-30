@@ -1,0 +1,39 @@
+﻿@model IEnumerable<AreaApplication.Models.excellSheet>
+
+@{
+    ViewBag.Title = "Exportexcell";
+}
+
+
+<div class="container">
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>City</th>
+
+        </tr>
+
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <td>@employee.Id</td>
+                <td>@employee.Name</td>
+                <td>@employee.City</td>
+
+            </tr>
+        }
+    </table>
+
+    <a href="@Url.Action("ExportToExcel","Database")" class="btn btn-primary">Export to Excel</a>
+
+</div>
+@{
+    string urlToAreaTwo = Url.Action("Index", "Excel", new { area = "ExceltoDatabase" });
+}
+
+<button onclick="location.href='@urlToAreaTwo'">Go to Area Two</button>
+<a href="@Url.Action("Index","Home", new {area =""})" class="btn btn-success">Go to home page</a>
+@*@Html.Action("GO home","Index", "Home", new {area = ""})*@
+
+@Html.ActionLink("Index for Area Two", "RedirectArea","Home", new { id = 2 }, new { @class = "btn btn-primary" })

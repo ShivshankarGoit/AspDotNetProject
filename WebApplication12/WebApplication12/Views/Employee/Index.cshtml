@@ -1,0 +1,21 @@
+﻿@model IEnumerable<WebApplication12.Models.EmployeeDetail>
+    @{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    <table>
+        <tr>
+            <td>Id</td>
+            <td>Name</td>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.id </td>
+                <td>@item.Name</td>
+            </tr>
+        }
+    </table>
+

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<WebApplication13.Models.info>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Mobile_No</th>
+            <th scope="col">Occupation</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model) 
+        {
+            <tr>
+                <td>@item.id </td>
+                <td>@item.Name</td>
+                <td>@item.Address </td>
+                <td>@item.Mobile_No</td>
+                <td>@item.Occupation</td>
+
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+

@@ -1,0 +1,15 @@
+﻿@model IEnumerable<Final.Models.Image>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>Image Gallery</h2>
+<ul>
+    @foreach (var image in Model)
+    {
+        <li>
+            <img src="@Url.Action("GetImage", "Home", new { id = image.Id  })" alt="@image.ImageName" style="width:200px;height:auto;" />
+            <p>@image.ImageName</p>
+        </li>
+    }
+</ul>

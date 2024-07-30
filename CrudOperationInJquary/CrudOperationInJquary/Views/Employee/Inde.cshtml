@@ -1,0 +1,151 @@
+﻿@model IEnumerable<CrudOperationInJquary.Models.Employee>
+
+@{
+    ViewBag.Title = "Product Management";
+}
+
+<h2>Product Management</h2>
+
+<div>
+    <button id="addProductBtn">Add Product</button>
+    <table id="productTable" border="1">
+        <thead>
+            <tr>
+
+                <th>Name</th>
+                <th>Age</th>
+                <th>State</th>
+                <th>Country</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<div id="productForm" style="display: none;">
+    <h3>Product Form</h3>
+    <input type="hidden" id="productId">
+    <div>
+        <label>Name:</label>
+        <input type="text" id="productName">
+    </div>
+    <div>
+        <label>Age:</label>
+        <input type="text" id="productPrice">
+    </div>
+    <div>
+        <label>States:</label>
+        <input type="text" id="productStock">
+    </div>
+    <div>
+        <label>Country:</label>
+        <input type="text" id="productStock">
+    </div>
+    <button id="saveProductBtn">Save</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        loadProducts();
+
+        $('#addProductBtn').click(function() {
+            clearForm();
+            $('#productForm').show();
+        });
+
+        $('#saveProductBtn').click(function() {
+            saveProduct();
+        });
+    });
+
+    function loadProducts() {
+        $.ajax({
+            url: '@Url.Action("GetProducts")',
+            type: 'GET',
+            success: function(data) {
+                var rows = '';
+                $.each(data, function(index, product) {
+                    rows += '<tr>';
+                    rows += '<td>' + employee.Name + '</td>';
+                    rows += '<td>' + employee.Age + '</td>';
+                    rows += '<td>' + employee.State+ '</td>';
+                    rows += '<td>' + employee.Country + '</td>';
+                    rows += '<td>';
+                    rows += '<button onclick="editProduct(' + employee.EmployeeId + ')">Edit</button>';
+                    rows += '<button onclick="deleteProduct(' + employee.EmployeeId + ')">Delete</button>';
+                    rows += '</td>';
+                    rows += '</tr>';
+                });
+                $('#productTable tbody').html(rows);
+            }
+        });
+    }
+
+    function saveProduct() {
+        var employee = {
+             
+            Name: $('#productName').val(),
+            Age: $('#productPrice').val(),
+            State: $('#productStock').val(),
+            Country: $('#productStock').val(),
+        };
+
+        var url = product.Id ? '@Url.Action("Edit")' : '@Url.Action("Delete")';
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: product,
+            success: function(response) {
+                if (response.success) {
+                    loadProducts();
+                    $('#productForm').hide();
+                } else {
+                    alert('An error occurred');
+                }
+            }
+        });
+    }
+
+    function Edit(id) {
+        $.ajax({
+            url: '@Url.Action("GetProducts")',
+            type: 'GET',
+            success: function(data) {
+                var product = data.find(p => p.Id === id);
+                $('#productId').val(product.Id);
+                $('#productName').val(product.Name);
+                $('#productPrice').val(product.Price);
+                $('#productStock').val(product.Stock);
+                $('#productForm').show();
+            }
+        });
+    }
+
+    function Delete(id) {
+        $.ajax({
+            url: '@Url.Action("DeleteProduct")',
+            type: 'POST',
+            data: { id: id },
+            success: function(response) {
+                if (response.success) {
+                    loadProducts();
+                } else {
+                    alert('An error occurred');
+                }
+            }
+        });
+    }
+
+    function clearForm() {
+        $('#productId').val('');
+        $('#productName').val('');
+        $('#productPrice').val('');
+        $('#productStock').val('');
+    }
+</script>
+
+

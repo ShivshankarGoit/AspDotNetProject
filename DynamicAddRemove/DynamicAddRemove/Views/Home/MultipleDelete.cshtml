@@ -1,0 +1,63 @@
+﻿@model IEnumerable<DynamicAddRemove.Models.Employee>
+@{
+    ViewBag.Title = "MultipleDelete";
+}
+
+<div class="container-fluid" id="dynamicFieldsContainer">
+    <h2>Multiple Delete</h2>
+    <form id="deleteForm" action="@Url.Action("MultipleDelete", "Home")" method="post">
+        @Html.AntiForgeryToken()
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" />
+                    </th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>State</th>
+                    <th>Country</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="fieldGroup_@item.EmployeeId">
+                        <td>
+                            <input type="checkbox" name="EmployeeId" value="@item.EmployeeId" class="employeeCheckbox" />
+                        </td>
+                        <td>@item.EmployeeId</td>
+                        <td>@item.Name</td>
+                        <td>@item.Age</td>
+                        <td>@item.State</td>
+                        <td>@item.Country</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn btn-danger">Delete Selected</button>
+    </form>
+</div>
+
+<!-- jQuery and Bootstrap scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Select/Deselect all checkboxes
+        $("#selectAll").click(function () {
+            $(".employeeCheckbox").prop('checked', this.checked);
+        });
+
+        // If any checkbox is unchecked, uncheck the select all checkbox
+        $(document).on("click", ".employeeCheckbox", function () {
+            if (!this.checked) {
+                $("#selectAll").prop('checked', false);
+            }
+        });
+    });
+</script>

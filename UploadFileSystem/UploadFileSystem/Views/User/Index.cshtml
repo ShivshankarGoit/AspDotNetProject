@@ -1,0 +1,119 @@
+﻿@model IEnumerable<UploadFileSystem.Models.User>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<div class="container">
+    <p>
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+    </p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    Files
+                </th>
+
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <ul>
+                            @foreach (var file in item.UserFiles)
+                            {
+                                <li>
+                                    @{
+                                        var fileExtension = Path.GetExtension(file.FilePath).ToLower();
+                                        var imageExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                                        var pdfExtension = ".pdf";
+                                        var docxExtension = ".docx";
+
+                                        if (imageExtensions.Contains(fileExtension))
+                                        {
+                                            <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#imageModal-@file.Id">
+                                                <img src="@Url.Content(file.FilePath)" alt="@file.FileName" style="max-width: 100px; max-height: 100px;" />
+                                            </button>
+                                        }
+                                        else if (fileExtension == pdfExtension)
+                                        {
+                                            <a href="@Url.Content(file.FilePath)" target="_blank">View PDF</a>
+                                        }
+                                        else if (fileExtension == docxExtension)
+                                        {
+                                            <a href="@Url.Content(file.FilePath)" download="@file.FileName">Download DOCX</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Content(file.FilePath)" target="_blank">@file.FileName</a>
+                                        }
+
+
+                                    }
+                                    <div class="modal" id="imageModal-@file.Id" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel-@file.Id" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="imageModalLabel-@file.Id">@file.FileName</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body text-center">
+                                                    <img src="@Url.Content(file.FilePath)" alt="@file.FileName" style="max-width: 100%; max-height: 80vh;" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-success" })
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-info" })
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-danger" })
+                        @Html.ActionLink("Upload", "Upload", new { id = item.Id }, new { @class = "btn btn-warning" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">

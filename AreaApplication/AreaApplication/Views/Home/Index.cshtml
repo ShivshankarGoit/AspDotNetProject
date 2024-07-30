@@ -1,0 +1,29 @@
+﻿@model IEnumerable<AreaApplication.Models.excellSheet>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="container">
+        <table class="table table-bordered table-hover">
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name </td>
+                    <td>@item.City</td>
+
+                </tr>
+            }
+        </table>
+
+
+    </div>
+
+
+
+

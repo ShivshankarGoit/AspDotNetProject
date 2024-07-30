@@ -1,0 +1,368 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="EcommerceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="bl_Admin">
+          <Key>
+            <PropertyRef Name="ad_id" />
+          </Key>
+          <Property Name="ad_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ad_username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ad_password" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ad_create_done" Type="datetime" />
+        </EntityType>
+        <EntityType Name="bl_catagory">
+          <Key>
+            <PropertyRef Name="cat_id" />
+          </Key>
+          <Property Name="cat_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cat_name" Type="nvarchar" MaxLength="155" Nullable="false" />
+          <Property Name="cat_color" Type="nvarchar" MaxLength="20" />
+          <Property Name="cat_icon" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="cat_create_done" Type="datetime" />
+          <Property Name="cat_fk_Ad_id" Type="int" />
+        </EntityType>
+        <EntityType Name="bl_Order">
+          <Key>
+            <PropertyRef Name="or_id" />
+          </Key>
+          <Property Name="or_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="or_username" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="or_phone_no" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="or_email" Type="nvarchar" MaxLength="50" />
+          <Property Name="or_create_time" Type="datetime" />
+          <Property Name="or_approved" Type="bit" />
+        </EntityType>
+        <EntityType Name="bl_OrderProduct">
+          <Key>
+            <PropertyRef Name="op_id" />
+          </Key>
+          <Property Name="op_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="op_pro_id" Type="int" />
+          <Property Name="op_qty" Type="int" />
+          <Property Name="op_unitprice" Type="int" />
+          <Property Name="op_total" Type="int" />
+          <Property Name="op_fk_or_id" Type="int" />
+        </EntityType>
+        <EntityType Name="bl_product">
+          <Key>
+            <PropertyRef Name="pro_id" />
+          </Key>
+          <Property Name="pro_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="pro_name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="pro_image" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="pro_image1" Type="nvarchar" MaxLength="50" />
+          <Property Name="pro_image2" Type="nvarchar" MaxLength="50" />
+          <Property Name="pro_image3" Type="nvarchar" MaxLength="50" />
+          <Property Name="pro_image4" Type="nvarchar" MaxLength="50" />
+          <Property Name="pro_desc" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="pro_price" Type="int" Nullable="false" />
+          <Property Name="pro_fk_cat_id" Type="int" />
+        </EntityType>
+        <Association Name="FK__bl_catago__cat_f__5EBF139D">
+          <End Role="bl_Admin" Type="Self.bl_Admin" Multiplicity="0..1" />
+          <End Role="bl_catagory" Type="Self.bl_catagory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_Admin">
+              <PropertyRef Name="ad_id" />
+            </Principal>
+            <Dependent Role="bl_catagory">
+              <PropertyRef Name="cat_fk_Ad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bl_OrderP__op_fk__68487DD7">
+          <End Role="bl_Order" Type="Self.bl_Order" Multiplicity="0..1" />
+          <End Role="bl_OrderProduct" Type="Self.bl_OrderProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_Order">
+              <PropertyRef Name="or_id" />
+            </Principal>
+            <Dependent Role="bl_OrderProduct">
+              <PropertyRef Name="op_fk_or_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bl_OrderP__op_pr__6754599E">
+          <End Role="bl_product" Type="Self.bl_product" Multiplicity="0..1" />
+          <End Role="bl_OrderProduct" Type="Self.bl_OrderProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_product">
+              <PropertyRef Name="pro_id" />
+            </Principal>
+            <Dependent Role="bl_OrderProduct">
+              <PropertyRef Name="op_pro_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bl_produc__pro_f__619B8048">
+          <End Role="bl_catagory" Type="Self.bl_catagory" Multiplicity="0..1" />
+          <End Role="bl_product" Type="Self.bl_product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_catagory">
+              <PropertyRef Name="cat_id" />
+            </Principal>
+            <Dependent Role="bl_product">
+              <PropertyRef Name="pro_fk_cat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EcommerceModelStoreContainer">
+          <EntitySet Name="bl_Admin" EntityType="Self.bl_Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bl_catagory" EntityType="Self.bl_catagory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bl_Order" EntityType="Self.bl_Order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bl_OrderProduct" EntityType="Self.bl_OrderProduct" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="bl_product" EntityType="Self.bl_product" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__bl_catago__cat_f__5EBF139D" Association="Self.FK__bl_catago__cat_f__5EBF139D">
+            <End Role="bl_Admin" EntitySet="bl_Admin" />
+            <End Role="bl_catagory" EntitySet="bl_catagory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bl_OrderP__op_fk__68487DD7" Association="Self.FK__bl_OrderP__op_fk__68487DD7">
+            <End Role="bl_Order" EntitySet="bl_Order" />
+            <End Role="bl_OrderProduct" EntitySet="bl_OrderProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bl_OrderP__op_pr__6754599E" Association="Self.FK__bl_OrderP__op_pr__6754599E">
+            <End Role="bl_product" EntitySet="bl_product" />
+            <End Role="bl_OrderProduct" EntitySet="bl_OrderProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bl_produc__pro_f__619B8048" Association="Self.FK__bl_produc__pro_f__619B8048">
+            <End Role="bl_catagory" EntitySet="bl_catagory" />
+            <End Role="bl_product" EntitySet="bl_product" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="EcommerceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="bl_Admin">
+          <Key>
+            <PropertyRef Name="ad_id" />
+          </Key>
+          <Property Name="ad_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ad_username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ad_password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ad_create_done" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="bl_catagory" Relationship="Self.FK__bl_catago__cat_f__5EBF139D" FromRole="bl_Admin" ToRole="bl_catagory" />
+        </EntityType>
+        <EntityType Name="bl_catagory">
+          <Key>
+            <PropertyRef Name="cat_id" />
+          </Key>
+          <Property Name="cat_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cat_name" Type="String" MaxLength="155" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="cat_color" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="cat_icon" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="cat_create_done" Type="DateTime" Precision="3" />
+          <Property Name="cat_fk_Ad_id" Type="Int32" />
+          <NavigationProperty Name="bl_Admin" Relationship="Self.FK__bl_catago__cat_f__5EBF139D" FromRole="bl_catagory" ToRole="bl_Admin" />
+          <NavigationProperty Name="bl_product" Relationship="Self.FK__bl_produc__pro_f__619B8048" FromRole="bl_catagory" ToRole="bl_product" />
+        </EntityType>
+        <EntityType Name="bl_Order">
+          <Key>
+            <PropertyRef Name="or_id" />
+          </Key>
+          <Property Name="or_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="or_username" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="or_phone_no" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="or_email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="or_create_time" Type="DateTime" Precision="3" />
+          <Property Name="or_approved" Type="Boolean" />
+          <NavigationProperty Name="bl_OrderProduct" Relationship="Self.FK__bl_OrderP__op_fk__68487DD7" FromRole="bl_Order" ToRole="bl_OrderProduct" />
+        </EntityType>
+        <EntityType Name="bl_OrderProduct">
+          <Key>
+            <PropertyRef Name="op_id" />
+          </Key>
+          <Property Name="op_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="op_pro_id" Type="Int32" />
+          <Property Name="op_qty" Type="Int32" />
+          <Property Name="op_unitprice" Type="Int32" />
+          <Property Name="op_total" Type="Int32" />
+          <Property Name="op_fk_or_id" Type="Int32" />
+          <NavigationProperty Name="bl_Order" Relationship="Self.FK__bl_OrderP__op_fk__68487DD7" FromRole="bl_OrderProduct" ToRole="bl_Order" />
+          <NavigationProperty Name="bl_product" Relationship="Self.FK__bl_OrderP__op_pr__6754599E" FromRole="bl_OrderProduct" ToRole="bl_product" />
+        </EntityType>
+        <EntityType Name="bl_product">
+          <Key>
+            <PropertyRef Name="pro_id" />
+          </Key>
+          <Property Name="pro_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="pro_name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pro_image" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pro_image1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pro_image2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pro_image3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pro_image4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="pro_desc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pro_price" Type="Int32" Nullable="false" />
+          <Property Name="pro_fk_cat_id" Type="Int32" />
+          <NavigationProperty Name="bl_catagory" Relationship="Self.FK__bl_produc__pro_f__619B8048" FromRole="bl_product" ToRole="bl_catagory" />
+          <NavigationProperty Name="bl_OrderProduct" Relationship="Self.FK__bl_OrderP__op_pr__6754599E" FromRole="bl_product" ToRole="bl_OrderProduct" />
+        </EntityType>
+        <Association Name="FK__bl_catago__cat_f__5EBF139D">
+          <End Role="bl_Admin" Type="Self.bl_Admin" Multiplicity="0..1" />
+          <End Role="bl_catagory" Type="Self.bl_catagory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_Admin">
+              <PropertyRef Name="ad_id" />
+            </Principal>
+            <Dependent Role="bl_catagory">
+              <PropertyRef Name="cat_fk_Ad_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bl_produc__pro_f__619B8048">
+          <End Role="bl_catagory" Type="Self.bl_catagory" Multiplicity="0..1" />
+          <End Role="bl_product" Type="Self.bl_product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_catagory">
+              <PropertyRef Name="cat_id" />
+            </Principal>
+            <Dependent Role="bl_product">
+              <PropertyRef Name="pro_fk_cat_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bl_OrderP__op_fk__68487DD7">
+          <End Role="bl_Order" Type="Self.bl_Order" Multiplicity="0..1" />
+          <End Role="bl_OrderProduct" Type="Self.bl_OrderProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_Order">
+              <PropertyRef Name="or_id" />
+            </Principal>
+            <Dependent Role="bl_OrderProduct">
+              <PropertyRef Name="op_fk_or_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__bl_OrderP__op_pr__6754599E">
+          <End Role="bl_product" Type="Self.bl_product" Multiplicity="0..1" />
+          <End Role="bl_OrderProduct" Type="Self.bl_OrderProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="bl_product">
+              <PropertyRef Name="pro_id" />
+            </Principal>
+            <Dependent Role="bl_OrderProduct">
+              <PropertyRef Name="op_pro_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="EcommerceEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="bl_Admin" EntityType="Self.bl_Admin" />
+          <EntitySet Name="bl_catagory" EntityType="Self.bl_catagory" />
+          <EntitySet Name="bl_Order" EntityType="Self.bl_Order" />
+          <EntitySet Name="bl_OrderProduct" EntityType="Self.bl_OrderProduct" />
+          <EntitySet Name="bl_product" EntityType="Self.bl_product" />
+          <AssociationSet Name="FK__bl_catago__cat_f__5EBF139D" Association="Self.FK__bl_catago__cat_f__5EBF139D">
+            <End Role="bl_Admin" EntitySet="bl_Admin" />
+            <End Role="bl_catagory" EntitySet="bl_catagory" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bl_produc__pro_f__619B8048" Association="Self.FK__bl_produc__pro_f__619B8048">
+            <End Role="bl_catagory" EntitySet="bl_catagory" />
+            <End Role="bl_product" EntitySet="bl_product" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bl_OrderP__op_fk__68487DD7" Association="Self.FK__bl_OrderP__op_fk__68487DD7">
+            <End Role="bl_Order" EntitySet="bl_Order" />
+            <End Role="bl_OrderProduct" EntitySet="bl_OrderProduct" />
+          </AssociationSet>
+          <AssociationSet Name="FK__bl_OrderP__op_pr__6754599E" Association="Self.FK__bl_OrderP__op_pr__6754599E">
+            <End Role="bl_product" EntitySet="bl_product" />
+            <End Role="bl_OrderProduct" EntitySet="bl_OrderProduct" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="EcommerceModelStoreContainer" CdmEntityContainer="EcommerceEntities">
+          <EntitySetMapping Name="bl_Admin">
+            <EntityTypeMapping TypeName="EcommerceModel.bl_Admin">
+              <MappingFragment StoreEntitySet="bl_Admin">
+                <ScalarProperty Name="ad_id" ColumnName="ad_id" />
+                <ScalarProperty Name="ad_username" ColumnName="ad_username" />
+                <ScalarProperty Name="ad_password" ColumnName="ad_password" />
+                <ScalarProperty Name="ad_create_done" ColumnName="ad_create_done" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bl_catagory">
+            <EntityTypeMapping TypeName="EcommerceModel.bl_catagory">
+              <MappingFragment StoreEntitySet="bl_catagory">
+                <ScalarProperty Name="cat_id" ColumnName="cat_id" />
+                <ScalarProperty Name="cat_name" ColumnName="cat_name" />
+                <ScalarProperty Name="cat_color" ColumnName="cat_color" />
+                <ScalarProperty Name="cat_icon" ColumnName="cat_icon" />
+                <ScalarProperty Name="cat_create_done" ColumnName="cat_create_done" />
+                <ScalarProperty Name="cat_fk_Ad_id" ColumnName="cat_fk_Ad_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bl_Order">
+            <EntityTypeMapping TypeName="EcommerceModel.bl_Order">
+              <MappingFragment StoreEntitySet="bl_Order">
+                <ScalarProperty Name="or_id" ColumnName="or_id" />
+                <ScalarProperty Name="or_username" ColumnName="or_username" />
+                <ScalarProperty Name="or_phone_no" ColumnName="or_phone_no" />
+                <ScalarProperty Name="or_email" ColumnName="or_email" />
+                <ScalarProperty Name="or_create_time" ColumnName="or_create_time" />
+                <ScalarProperty Name="or_approved" ColumnName="or_approved" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bl_OrderProduct">
+            <EntityTypeMapping TypeName="EcommerceModel.bl_OrderProduct">
+              <MappingFragment StoreEntitySet="bl_OrderProduct">
+                <ScalarProperty Name="op_id" ColumnName="op_id" />
+                <ScalarProperty Name="op_pro_id" ColumnName="op_pro_id" />
+                <ScalarProperty Name="op_qty" ColumnName="op_qty" />
+                <ScalarProperty Name="op_unitprice" ColumnName="op_unitprice" />
+                <ScalarProperty Name="op_total" ColumnName="op_total" />
+                <ScalarProperty Name="op_fk_or_id" ColumnName="op_fk_or_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="bl_product">
+            <EntityTypeMapping TypeName="EcommerceModel.bl_product">
+              <MappingFragment StoreEntitySet="bl_product">
+                <ScalarProperty Name="pro_id" ColumnName="pro_id" />
+                <ScalarProperty Name="pro_name" ColumnName="pro_name" />
+                <ScalarProperty Name="pro_image" ColumnName="pro_image" />
+                <ScalarProperty Name="pro_image1" ColumnName="pro_image1" />
+                <ScalarProperty Name="pro_image2" ColumnName="pro_image2" />
+                <ScalarProperty Name="pro_image3" ColumnName="pro_image3" />
+                <ScalarProperty Name="pro_image4" ColumnName="pro_image4" />
+                <ScalarProperty Name="pro_desc" ColumnName="pro_desc" />
+                <ScalarProperty Name="pro_price" ColumnName="pro_price" />
+                <ScalarProperty Name="pro_fk_cat_id" ColumnName="pro_fk_cat_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

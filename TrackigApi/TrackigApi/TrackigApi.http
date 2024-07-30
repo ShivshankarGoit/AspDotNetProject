@@ -1,0 +1,6 @@
+@TrackigApi_HostAddress = http://localhost:5291
+
+GET {{TrackigApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

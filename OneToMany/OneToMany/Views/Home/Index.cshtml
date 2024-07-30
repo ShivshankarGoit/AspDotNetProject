@@ -1,0 +1,49 @@
+﻿@model IEnumerable<OneToMany.Models.StudentDetail>
+
+@{
+    ViewData["Title"] = "StudentDetail";
+}
+
+<h1>Student Detail</h1>
+<div class="container">
+    <p>
+        @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
+
+    </p>
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.student_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.courses)
+            </th>
+
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.student_name)
+                </td>
+                <td>
+                    @foreach (var course in item.courses)
+                    {
+                        <span>@course.course_name</span>
+                    }
+                </td>
+
+                <td>
+                    @Html.ActionLink("Create", "Create", new { id = item.student_id }, new { @class = "btn btn-success" }) |
+                    @Html.ActionLink("Created", "Created", new { id = item.student_id }, new { @class = "btn btn-success" }) |
+                    @Html.ActionLink("Delete", "DeleteStudentAndCourses", new { id = item.student_id }, new { @class = "btn btn-danger " })
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

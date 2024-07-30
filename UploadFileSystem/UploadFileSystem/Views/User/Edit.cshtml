@@ -1,0 +1,80 @@
+﻿
+@model UploadFileSystem.Models.User
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>User</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <h4>File:</h4>
+        @{ var i = 0;}
+        @foreach (var file in Model.UserFiles.Where(x => !String.IsNullOrEmpty(x.FilePath)))
+        {
+            ++i;
+            <input type="hidden" value="@i" name="UserFiles.index" />
+            <input type="hidden" value="@file.Id" name="UserFiles[@i].Id" />
+            <tr>
+                <td>@file.FileName</td>
+                <td>
+                    @{
+                        var fileExtension = Path.GetExtension(file.FilePath).ToLower();
+                        var imageExtensions = new List<string> { ".jpg", ".jpeg", ".png", ".gif", ".bmp" };
+                        var pdfExtension = ".pdf";
+                        var docxExtension = ".docx";
+
+                        if (imageExtensions.Contains(fileExtension))
+                        {
+                            <img src="@Url.Content(file.FilePath)" style="max-width: 100px; max-height: 100px;" />
+                        }
+                        else if (fileExtension == pdfExtension)
+                        {
+                            <a href="@Url.Content(file.FilePath)" target="_blank">View PDF</a>
+                        }
+                        else if (fileExtension == docxExtension)
+                        {
+                            <a href="@Url.Content(file.FilePath)" download="@file.FileName">Download DOCX</a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Content(file.FilePath)" target="_blank">@file.FileName</a>
+                        }
+                    }
+                    <!----<input value="@file.FileName" name="UserFiles[@i].FileName" />-->
+                </td>
+            </tr>
+            <div class="form-group">
+                <label for="file" class="control-label col-md-2">File</label>
+                <div class="col-md-10">
+                    <input type="file" name="UserFiles[@i].httpPostedFileBases" />
+                </div>
+            </div>
+        }
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-warning" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
