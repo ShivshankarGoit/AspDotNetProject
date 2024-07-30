@@ -39,10 +39,11 @@
                             <td>@Html.DisplayFor(modelItem => orderItem.Qiantity)</td>
 
                             
-                                <td >
-                                    @Html.ActionLink("Edit", "Edit", new { id = order.OrderId }, new { @class = "btn btn-success" }) |
-                                    @Html.ActionLink("Delete", "Delete", new { id = order.OrderId }, new { @class = "btn btn-danger" })
-                                </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = order.OrderId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("Details", "Details", new { id = order.OrderId }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Delete", "Delete", new { id = order.OrderId }, new { @class = "btn btn-danger" })
+                            </td>
                             
                         </tr>
                     }

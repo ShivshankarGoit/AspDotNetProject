@@ -1,0 +1,32 @@
+﻿@model Dynamic1toMany.Models.Order
+@{
+    ViewBag.Title = "View";
+}
+
+<div class="container">
+    <h2>@Html.DisplayFor(model => model.OrderName)</h2>
+    <table class="table table-bordered table-hover">
+
+        <thead>
+            
+            <tr>
+                
+                <th>Product Name</th>
+                <th>Quantity</th>
+
+            </tr>
+        </thead>
+        <tbody>
+           
+          
+            @foreach (var item in Model.OrderItems)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Qiantity)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+

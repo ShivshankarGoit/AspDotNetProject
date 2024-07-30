@@ -2,58 +2,26 @@
 
 <h2>Edit Order</h2>
 
-<form asp-action="Edit" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="OrderId" name="OrderId" value="@Model.OrderId" />
+@using (Html.BeginForm())
+{
+    @Html.EditorForModel()
     
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.OrderName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.EditorFor(model => model.OrderName, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.OrderName, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div id="orderItems">
-        @{ var i = 0;}
-        @foreach (var item in Model.OrderItems)
-        {
-            ++i;
-        <input type="hidden" value="@i" name="OrderItems.index" />
-            <div class="form-group">
-                <input type="hidden" name="OrderItems[@i].OrderItemId" class="form-control" value="@item.OrderItemId" />
-                <label class="control-label">ProductName</label>
-                <input name="OrderItems[@i].ProductName" type="text" class="form-control" value="@item.ProductName" />
-
-                <label class="control-label">Quantity</label>
-                <input name="OrderItems[@i].Quantity" type="number" class="form-control" value="@item.Quantity" />
-
-
-                <button type="button" onclick="removeOrderItem(this)" class="btn btn-danger">Remove</button>
-            </div>
-
-        }
-    </div>
-
-    <button type="button" onclick="addOrderItem()" class="btn btn-secondary">Add Item</button>
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+}
 
 @section Scripts {
     <script>
         function addOrderItem() {
             var index = $('#orderItems .form-group').length + 1;
             var orderItemHtml = `
-                        <div class="form-group">
-                            <input type="hidden" name="OrderItems.index" value="${index}"/>
-                            <input type="hidden" name="OrderItems[${index}].OrderItemId" />
-                            <label for="OrderItems_${index}__ProductName">Product Name</label>
-                            <input name="OrderItems[${index}].ProductName" class="form-control" />
-                            <label for="OrderItems_${index}__Quantity">Quantity</label>
-                            <input name="OrderItems[${index}].Quantity" class="form-control" />
-                            <button type="button" onclick="removeOrderItem(this)" class="btn btn-danger">Remove</button>
-                        </div>`;
+                            <div class="form-group">
+                                <input type="hidden" name="OrderItems.index" value="${index}"/>
+                                <input type="hidden" name="OrderItems[${index}].OrderItemId" />
+                                <label for="OrderItems_${index}__ProductName">Product Name</label>
+                                <input name="OrderItems[${index}].ProductName" class="form-control" />
+                                <label for="OrderItems_${index}__Quantity">Quantity</label>
+                                <input name="OrderItems[${index}].Quantity" class="form-control" />
+                                <button type="button" onclick="removeOrderItem(this)" class="btn btn-danger">Remove</button>
+                            </div>`;
             $('#orderItems').append(orderItemHtml);
         }
 

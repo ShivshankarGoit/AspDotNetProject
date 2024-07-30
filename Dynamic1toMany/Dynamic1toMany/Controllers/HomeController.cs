@@ -157,6 +157,17 @@ namespace Dynamic1toMany.Controllers
             return View(model);
         }
 
+        public ActionResult Details(int id)
+        {
+            var emp = _Context.Orders.Find(id);
+            if (emp == null)
+            {
+                return HttpNotFound();
+            }
+            return View(emp);
+
+        }
+
         public ActionResult Delete(int? id)
         {
             if (id == null)
