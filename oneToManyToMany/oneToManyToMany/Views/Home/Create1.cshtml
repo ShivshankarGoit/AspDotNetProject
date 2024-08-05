@@ -1,0 +1,129 @@
+﻿@model oneToManyToMany.Models.DepartmentViewModel
+@{
+    ViewBag.Title = "Create1";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div id="departmentsContainer">
+            <h4>Departments</h4>
+            <button type="button" id="addDepartmentButton" class="btn btn-primary">Add Department</button>
+        </div>
+
+        <div class="form-group" style="margin-top: 20px;">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var departmentIndex = 0; // Keeps track of the number of departments
+            var employeeIndex = {}; // Keeps track of employees per department
+            var projectIndex = {}; // Keeps track of projects per employee
+
+            // Handle add department button click
+            $('#addDepartmentButton').click(function () {
+                var departmentHtml = `
+                        <div class="department-entry" id="department_${departmentIndex}" style="margin-bottom: 20px;">
+                            <input type="hidden" name="Departments[${departmentIndex}].Index" value="${departmentIndex}" />
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Department Name</label>
+                                <div class="col-md-10">
+                                    <input type="text" name="Departments[${departmentIndex}].Name" class="form-control" />
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary addEmployeeButton" data-department-index="${departmentIndex}">Add Employee</button>
+                            <button type="button" class="btn btn-danger removeDepartmentButton" data-department-index="${departmentIndex}">Remove Department</button>
+                            <div class="employeesContainer" id="employeesContainer_${departmentIndex}" style="margin-top: 20px;">
+                                <!-- Employees will be added here -->
+                            </div>
+                        </div>
+                    `;
+                $('#departmentsContainer').append(departmentHtml);
+                employeeIndex[departmentIndex] = 0;
+                departmentIndex++;
+            });
+
+            // Handle add employee button click (event delegation)
+            $('#departmentsContainer').on('click', '.addEmployeeButton', function () {
+                var deptIndex = $(this).data('department-index');
+                var empIndex = employeeIndex[deptIndex];
+                var employeeHtml = `
+                        <div class="employee-entry" id="employee_${deptIndex}_${empIndex}" style="margin-bottom: 20px;">
+                            <input type="hidden" name="Departments[${deptIndex}].Employees[${empIndex}].Index" value="${empIndex}" />
+                            <div class="form-group">
+                                <label class="control-label col-md-2">Employee Full Name</label>
+                                <div class="col-md-10">
+                                    <input type="text" name="Departments[${deptIndex}].Employees[${empIndex}].FullName" class="form-control" />
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary addProjectButton" data-department-index="${deptIndex}" data-employee-index="${empIndex}">Add Project</button>
+                            <button type="button" class="btn btn-danger removeEmployeeButton" data-department-index="${deptIndex}" data-employee-index="${empIndex}">Remove Employee</button>
+                            <div class="projectsContainer" id="projectsContainer_${deptIndex}_${empIndex}" style="margin-top: 10px;">
+                                <!-- Projects will be added here -->
+                            </div>
+                        </div>
+                    `;
+                $(`#employeesContainer_${deptIndex}`).append(employeeHtml).show();
+                projectIndex[`${deptIndex}_${empIndex}`] = 0;
+                employeeIndex[deptIndex]++;
+            });
+
+            // Handle add project button click (event delegation)
+            $('#departmentsContainer').on('click', '.addProjectButton', function () {
+                var deptIndex = $(this).data('department-index');
+                var empIndex = $(this).data('employee-index');
+                var projIndex = projectIndex[`${deptIndex}_${empIndex}`];
+                var projectHtml = `
+                        <div class="project-entry" style="margin-bottom: 10px;">
+                            <input type="hidden" name="Departments[${deptIndex}].Employees[${empIndex}].Projects[${projIndex}].Index" value="${projIndex}" />
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Project Name</label>
+                                <div class="col-md-9">
+                                    <input type="text" name="Departments[${deptIndex}].Employees[${empIndex}].Projects[${projIndex}].Name" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Project Description</label>
+                                <div class="col-md-9">
+                                    <textarea name="Departments[${deptIndex}].Employees[${empIndex}].Projects[${projIndex}].Description" class="form-control"></textarea>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger removeProjectButton" data-department-index="${deptIndex}" data-employee-index="${empIndex}" data-project-index="${projIndex}">Remove Project</button>
+                        </div>
+                    `;
+                $(`#projectsContainer_${deptIndex}_${empIndex}`).append(projectHtml);
+                projectIndex[`${deptIndex}_${empIndex}`]++;
+            });
+
+            // Handle remove department button click (event delegation)
+            $('#departmentsContainer').on('click', '.removeDepartmentButton', function () {
+                var deptIndex = $(this).data('department-index');
+                $(`#department_${deptIndex}`).remove();
+            });
+
+            // Handle remove employee button click (event delegation)
+            $('#departmentsContainer').on('click', '.removeEmployeeButton', function () {
+                var deptIndex = $(this).data('department-index');
+                var empIndex = $(this).data('employee-index');
+                $(`#employee_${deptIndex}_${empIndex}`).remove();
+            });
+
+            // Handle remove project button click (event delegation)
+            $('#departmentsContainer').on('click', '.removeProjectButton', function () {
+                var deptIndex = $(this).data('department-index');
+                var empIndex = $(this).data('employee-index');
+                var projIndex = $(this).data('project-index');
+                $(`#projectsContainer_${deptIndex}_${empIndex} .project-entry`).eq(projIndex).remove();
+            });
+        });
+    </script>
+}

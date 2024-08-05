@@ -1,0 +1,143 @@
+﻿@model IEnumerable<oneToManyToMany.Models.Department>
+
+@{
+    ViewData["Title"] = "Product";
+}
+
+<h1>Order Details</h1>
+<div class="container">
+    <p>
+        @Html.ActionLink("Create New", "Create1", null, new { @class = "btn btn-primary" })
+
+    </p>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th> Name</th>
+                <th>FullName</th>
+                <th>ProjectName</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var department in Model)
+            {
+                int employeeCount = department.Employees.Count;
+                int departmentRowSpan = employeeCount > 0 ? department.Employees.Sum(e => e.Projects.Count > 0 ? e.Projects.Count : 1) : 1;
+
+                bool departmentDisplayed = false;
+                foreach (var employee in department.Employees)
+                {
+                    int projectCount = employee.Projects.Count;
+                    int employeeRowSpan = projectCount > 0 ? projectCount : 1;
+
+                    bool employeeDisplayed = false;
+                    foreach (var project in employee.Projects)
+                    {
+                        <tr>
+                            @if (!departmentDisplayed)
+                            {
+                                <td rowspan="@departmentRowSpan">@department.Name</td>
+                                departmentDisplayed = true;
+                            }
+                            @if (!employeeDisplayed)
+                            {
+                                <td rowspan="@employeeRowSpan">@employee.FullName</td>
+                                employeeDisplayed = true;
+                            }
+                            <td>@project.ProjectName</td>
+
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("Details", "Details", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                                @Html.ActionLink("AddProject", "AddProject", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                            </td>
+
+                        </tr>
+                    }
+                    if (employee.Projects.Count == 0)
+                    {
+                        <tr>
+                            @if (!departmentDisplayed)
+                            {
+                                <td rowspan="@departmentRowSpan">@department.Name</td>
+                                departmentDisplayed = true;
+                            }
+                            @if (!employeeDisplayed)
+                            {
+                                <td rowspan="@employeeRowSpan">@employee.FullName</td>
+                                employeeDisplayed = true;
+                            }
+                            <td>No projects assigned</td>
+
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("Details", "Details", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                                @Html.ActionLink("AddProject", "AddProject", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                            </td>
+                        </tr>
+                    }
+                }
+                if (department.Employees.Count == 0)
+                {
+                    <tr>
+                        <td rowspan="@departmentRowSpan">@department.Name</td>
+                        <td colspan="2">No employees assigned</td>
+                    </tr>
+                }
+            }
+
+            @*@foreach (var department in Model)
+                {
+                    var rowSpan = department.Employees != null ? department.Employees.Count : 1;
+
+                    if (department.Employees != null && department.Employees.Count > 0)
+                    {
+                        var firstItem = true;
+
+
+                        foreach (var employee in department.Employees)
+                        {
+                            var Spam = employee.Projects != null ? employee.Projects.Count : 1;
+                            if (employee.Projects != null && employee.Projects.Count > 0)
+                            {
+                                var secItem = true;
+                                foreach (var project in employee.Projects)
+                                {
+                                    <tr>
+                                        @if (firstItem)
+                                        {
+                                            firstItem = false;
+                                            <td rowspan="@rowSpan">@Html.DisplayFor(modelItem => department.Name)</td>
+                                        }
+
+                                        <td>@Html.DisplayFor(modelItem => employee.FullName)</td>
+                                        <td>@Html.DisplayFor(modelItem => employee.FullName)</td>
+                                        <td>
+                                            @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                                            @Html.ActionLink("Details", "Details", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                                            @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                                            @Html.ActionLink("AddProject", "AddProject", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => department.Name)</td>
+                                    <td colspan="2">No products</td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                                        @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                                    </td>
+                                </tr>
+                            }
+
+                        }*@
+        </tbody>
+    </table>
+</div>

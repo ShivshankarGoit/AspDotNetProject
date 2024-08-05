@@ -1,0 +1,147 @@
+﻿@model oneToManyToMany.Models.DepartmentViewModel
+@{
+    ViewBag.Title = "Edit Department";
+}
+
+@using (Html.BeginForm("Edit", "Home", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <!-- Department Section -->
+        <div id="departmentSection">
+            <h4>Department</h4>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <button type="button" id="addEmployeeButton" class="btn btn-secondary">Add Employee</button>
+        </div>
+
+        <!-- Employees Section -->
+        <div id="employeesContainer" style="margin-top: 20px;">
+            <h4>Employees</h4>
+            @for (int i = 0; i < Model.Employees.Count; i++)
+            {
+                <div class="employee-entry" id="employee_@i" style="margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Employee Full Name</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(m => m.Employees[i].FullName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(m => m.Employees[i].FullName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-secondary addProjectButton" data-employee-index="@i">Add Project</button>
+                    <div class="projectsContainer" id="projectsContainer_@i" style="margin-top: 10px;">
+                        <h5>Projects</h5>
+                        @for (int j = 0; j < Model.Employees[i].Projects.Count; j++)
+                        {
+                            <div class="project-entry" style="margin-bottom: 10px;">
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Project Name</label>
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(m => m.Employees[i].Projects[j].ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(m => m.Employees[i].Projects[j].ProjectName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-md-3">Project Description</label>
+                                    <div class="col-md-9">
+                                        @Html.EditorFor(m => m.Employees[i].Projects[j].Description, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(m => m.Employees[i].Projects[j].Description, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-right">
+                                    <button type="button" class="btn btn-danger removeField" data-id="${projIndex}">Remove</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Submit Button -->
+        <div class="form-group" style="margin-top: 20px;">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save Changes" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var employeeIndex = @Model.Employees.Count; // Starts with the current number of employees
+            var projectIndex = {}; // Keeps track of projects per employee
+
+            // Initialize projectIndex with existing projects
+            @for (int i = 0; i < Model.Employees.Count; i++)
+            {
+                <text>
+                    projectIndex[@i] = @Model.Employees[i].Projects.Count;
+                </text>
+            }
+
+            // Handle add employee button click
+            $('#addEmployeeButton').click(function () {
+                var employeeHtml = `
+                    <div class="employee-entry" id="employee_${employeeIndex}" style="margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Employee Full Name</label>
+                            <div class="col-md-10">
+                                <input type="text" name="Employees[${employeeIndex}].FullName" class="form-control" />
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary addProjectButton" data-employee-index="${employeeIndex}">Add Project</button>
+                        <div class="projectsContainer" id="projectsContainer_${employeeIndex}" style="margin-top: 10px;">
+                            <h5>Projects</h5>
+                        </div>
+                    </div>
+                `;
+                $('#employeesContainer').append(employeeHtml);
+                projectIndex[employeeIndex] = 0;
+                employeeIndex++;
+            });
+
+            // Handle add project button click (event delegation)
+            $('#employeesContainer').on('click', '.addProjectButton', function () {
+                var empIndex = $(this).data('employee-index');
+                var projIndex = projectIndex[empIndex];
+                var projectHtml = `
+                    <div class="project-entry" style="margin-bottom: 10px;">
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Project Name</label>
+                            <div class="col-md-9">
+                                <input type="text" name="Employees[${empIndex}].Projects[${projIndex}].ProjectName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Project Description</label>
+                            <div class="col-md-9">
+                                <input type="text" name="Employees[${empIndex}].Projects[${projIndex}].Description" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 text-right">
+                          <button type="button" class="btn btn-danger removeField" data-id="${projIndex}">Remove</button>
+                         </div>
+                    </div>
+                `;
+                $(`#projectsContainer_${empIndex}`).append(projectHtml);
+                projectIndex[empIndex]++;
+            });
+
+            // Function to remove a field group
+            $(document).on("click", ".removeField", function () {
+                var id = $(this).data("id");
+                $("#fieldGroup" + id).remove();
+            });
+
+        });
+    </script>
+}

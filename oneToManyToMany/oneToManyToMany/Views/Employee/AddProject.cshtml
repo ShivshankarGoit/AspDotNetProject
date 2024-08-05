@@ -1,0 +1,55 @@
+﻿@model IEnumerable<oneToManyToMany.Models.EmployeeViewModel>
+
+@{
+    ViewBag.Title = "Add Project";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Project</h2>
+
+@using (Html.BeginForm("AddProject", "Employee", FormMethod.Post, new { @id = "addProjectForm" }))
+{
+    <div class="form-group">
+        <label for="employeeId">Select Employee</label>
+        <select id="employeeId" name="employeeId" class="form-control">
+            @foreach (var employee in Model)
+            {
+                <option value="@employee.EmployeeId">@employee.FullName</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="projectName">Project Name</label>
+        <input type="text" id="projectName" name="projectName" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Project</button>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#addProjectForm').submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddProject", "Employee")',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Project added successfully!");
+                            // Optionally, you can redirect or clear the form here
+                        } else {
+                            alert("Failed to add project.");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while adding the project.");
+                    }
+                });
+            });
+        });
+    </script>
+}
