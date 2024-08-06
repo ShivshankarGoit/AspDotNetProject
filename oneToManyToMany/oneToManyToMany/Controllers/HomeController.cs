@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using oneToManyToMany.Models;
+using System.Net;
 
 namespace oneToManyToMany.Controllers
 {
@@ -52,7 +53,8 @@ namespace oneToManyToMany.Controllers
                                 FullName = e.FullName,
                                 Projects = e.Projects.Select(p => new Project
                                 {
-                                    ProjectName = p.ProjectName
+                                    ProjectName = p.ProjectName,
+                                    Description = p.Description,
                                 }).ToList()
                             }).ToList()
                         };
@@ -114,7 +116,7 @@ namespace oneToManyToMany.Controllers
         public ActionResult Edit(int id, DepartmentViewModel model)
         {
             if (ModelState.IsValid)
-            {
+            {   // here  we find the id passes from the view is  in departmentId or not 
                 var department = _context.Departments
                     .Include(d => d.Employees.Select(e => e.Projects))
                     .FirstOrDefault(d => d.DepartmentId == id);
@@ -125,7 +127,7 @@ namespace oneToManyToMany.Controllers
 
                     // Update employees
                     foreach (var employeeModel in model.Employees)
-                    {
+                    {     // here we find employee inside the departmentId provided 
                         var employee = department.Employees
                             .FirstOrDefault(e => e.FullName == employeeModel.FullName);
 
@@ -133,12 +135,12 @@ namespace oneToManyToMany.Controllers
                         {
                             // Update projects
                             foreach (var projectModel in employeeModel.Projects)
-                            {
+                            {  // here we find the project which is assign to the employee
                                 var project = employee.Projects
                                     .FirstOrDefault(p => p.ProjectName == projectModel.ProjectName);
 
                                 if (project != null)
-                                {
+                                {  
                                     project.ProjectName = projectModel.ProjectName;
                                     project.Description = projectModel.Description;
                                 }
@@ -152,7 +154,7 @@ namespace oneToManyToMany.Controllers
                                 }
                             }
 
-                            // Remove projects not in the updated list
+                            // Remove projects which is not in the updated list after editing
                             var updatedProjectNames = employeeModel.Projects.Select(p => p.ProjectName).ToList();
                             var projectsToRemove = employee.Projects.Where(p => !updatedProjectNames.Contains(p.ProjectName)).ToList();
                             foreach (var project in projectsToRemove)
@@ -162,7 +164,7 @@ namespace oneToManyToMany.Controllers
                         }
                         else
                         {
-                            // Add new employee with projects
+                            // Add new employee with projects at edit section
                             department.Employees.Add(new Employee
                             {
                                 FullName = employeeModel.FullName,
@@ -175,9 +177,12 @@ namespace oneToManyToMany.Controllers
                         }
                     }
 
-                    // Remove employees not in the updated list
+                  // Remove employees which is  not in the updated list after editing 
+                    // In this line  create a list of employee whose data is edithed in model
                     var updatedEmployeeNames = model.Employees.Select(e => e.FullName).ToList();
+                       // this line search which employee from the department should removed according to what we did in editing fome
                     var employeesToRemove = department.Employees.Where(e => !updatedEmployeeNames.Contains(e.FullName)).ToList();
+                    // this line remove each employee which we search in above l
                     foreach (var employee in employeesToRemove)
                     {
                         department.Employees.Remove(employee);
@@ -191,6 +196,58 @@ namespace oneToManyToMany.Controllers
 
             return View(model);
         }
+
+        // GET: Departments/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var department = _context.Departments.Include(d => d.Employees.Select(e => e.Projects))
+                                                 .FirstOrDefault(d => d.DepartmentId == id);
+
+            if (department == null)
+            {
+                return HttpNotFound();
+            }
+
+            var departmentViewModel = new DepartmentViewModel
+            {
+                Name = department.Name,
+                Employees = department.Employees.Select(e => new employeeViewModel
+                {
+                    FullName = e.FullName,
+                    Projects = e.Projects.Select(p => new ProjectViewModel
+                    {
+                        ProjectName = p.ProjectName,
+                        Description = p.Description
+                    }).ToList()
+                }).ToList()
+            };
+
+            return View(departmentViewModel);
+        }
+
+        // POST: Departments/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            var department = _context.Departments.Include(d => d.Employees.Select(e => e.Projects))
+                                                 .FirstOrDefault(d => d.DepartmentId == id);
+
+            if (department != null)
+            {
+                _context.Departments.Remove(department);
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("Index1");
+        }
+
+
 
 
 

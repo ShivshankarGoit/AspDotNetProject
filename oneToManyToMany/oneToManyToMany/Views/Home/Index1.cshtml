@@ -8,14 +8,14 @@
 <div class="container">
     <p>
         @Html.ActionLink("Create New", "Create1", null, new { @class = "btn btn-primary" })
-
     </p>
     <table class="table table-bordered table-hover">
         <thead>
             <tr>
-                <th> Name</th>
-                <th>FullName</th>
-                <th>ProjectName</th>
+                <th>Name</th>
+                <th>Full Name</th>
+                <th>Project Name</th>
+                <th>Project Description</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -46,14 +46,14 @@
                                 employeeDisplayed = true;
                             }
                             <td>@project.ProjectName</td>
+                            <td>@project.Description</td>
 
                             <td>
                                 @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
-                                @Html.ActionLink("Details", "Details", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                              
                                 @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
-                                @Html.ActionLink("AddProject", "AddProject", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                               
                             </td>
-
                         </tr>
                     }
                     if (employee.Projects.Count == 0)
@@ -70,12 +70,12 @@
                                 employeeDisplayed = true;
                             }
                             <td>No projects assigned</td>
-
+                            <td></td>
                             <td>
                                 @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
-                                @Html.ActionLink("Details", "Details", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                            
                                 @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
-                                @Html.ActionLink("AddProject", "AddProject", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                              
                             </td>
                         </tr>
                     }
@@ -84,60 +84,16 @@
                 {
                     <tr>
                         <td rowspan="@departmentRowSpan">@department.Name</td>
-                        <td colspan="2">No employees assigned</td>
+                        <td colspan="3">No employees assigned</td>
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
+                           
+                            @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
+                          
+                        </td>
                     </tr>
                 }
             }
-
-            @*@foreach (var department in Model)
-                {
-                    var rowSpan = department.Employees != null ? department.Employees.Count : 1;
-
-                    if (department.Employees != null && department.Employees.Count > 0)
-                    {
-                        var firstItem = true;
-
-
-                        foreach (var employee in department.Employees)
-                        {
-                            var Spam = employee.Projects != null ? employee.Projects.Count : 1;
-                            if (employee.Projects != null && employee.Projects.Count > 0)
-                            {
-                                var secItem = true;
-                                foreach (var project in employee.Projects)
-                                {
-                                    <tr>
-                                        @if (firstItem)
-                                        {
-                                            firstItem = false;
-                                            <td rowspan="@rowSpan">@Html.DisplayFor(modelItem => department.Name)</td>
-                                        }
-
-                                        <td>@Html.DisplayFor(modelItem => employee.FullName)</td>
-                                        <td>@Html.DisplayFor(modelItem => employee.FullName)</td>
-                                        <td>
-                                            @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
-                                            @Html.ActionLink("Details", "Details", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
-                                            @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
-                                            @Html.ActionLink("AddProject", "AddProject", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
-                                        </td>
-
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td>@Html.DisplayFor(modelItem => department.Name)</td>
-                                    <td colspan="2">No products</td>
-                                    <td>
-                                        @Html.ActionLink("Edit", "Edit", new { id = department.DepartmentId }, new { @class = "btn btn-success" }) |
-                                        @Html.ActionLink("Delete", "Delete", new { id = department.DepartmentId }, new { @class = "btn btn-danger" })
-                                    </td>
-                                </tr>
-                            }
-
-                        }*@
         </tbody>
     </table>
 </div>

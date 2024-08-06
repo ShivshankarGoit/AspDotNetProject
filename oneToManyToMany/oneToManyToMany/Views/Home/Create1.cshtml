@@ -44,6 +44,19 @@
                             <button type="button" class="btn btn-danger removeDepartmentButton" data-department-index="${departmentIndex}">Remove Department</button>
                             <div class="employeesContainer" id="employeesContainer_${departmentIndex}" style="margin-top: 20px;">
                                 <!-- Employees will be added here -->
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee Full Name</th>
+                                            <th>Project Name</th>
+                                            <th>Description</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="employeesTable_${departmentIndex}">
+                                        <!-- Employee and project rows will be added here -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     `;
@@ -57,22 +70,26 @@
                 var deptIndex = $(this).data('department-index');
                 var empIndex = employeeIndex[deptIndex];
                 var employeeHtml = `
-                        <div class="employee-entry" id="employee_${deptIndex}_${empIndex}" style="margin-bottom: 20px;">
-                            <input type="hidden" name="Departments[${deptIndex}].Employees[${empIndex}].Index" value="${empIndex}" />
-                            <div class="form-group">
-                                <label class="control-label col-md-2">Employee Full Name</label>
-                                <div class="col-md-10">
-                                    <input type="text" name="Departments[${deptIndex}].Employees[${empIndex}].FullName" class="form-control" />
+                        <tr id="employee_${deptIndex}_${empIndex}">
+                            <td>
+                                <input type="text" name="Departments[${deptIndex}].Employees[${empIndex}].FullName" class="form-control" />
+                            </td>
+                            <td colspan="2">
+                                <button type="button" class="btn btn-secondary addProjectButton" data-department-index="${deptIndex}" data-employee-index="${empIndex}">Add Project</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger removeEmployeeButton" data-department-index="${deptIndex}" data-employee-index="${empIndex}">Remove Employee</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <div class="projectsContainer" id="projectsContainer_${deptIndex}_${empIndex}" style="margin-top: 10px;">
+                                    <!-- Projects will be added here -->
                                 </div>
-                            </div>
-                            <button type="button" class="btn btn-secondary addProjectButton" data-department-index="${deptIndex}" data-employee-index="${empIndex}">Add Project</button>
-                            <button type="button" class="btn btn-danger removeEmployeeButton" data-department-index="${deptIndex}" data-employee-index="${empIndex}">Remove Employee</button>
-                            <div class="projectsContainer" id="projectsContainer_${deptIndex}_${empIndex}" style="margin-top: 10px;">
-                                <!-- Projects will be added here -->
-                            </div>
-                        </div>
+                            </td>
+                        </tr>
                     `;
-                $(`#employeesContainer_${deptIndex}`).append(employeeHtml).show();
+                $(`#employeesTable_${deptIndex}`).append(employeeHtml);
                 projectIndex[`${deptIndex}_${empIndex}`] = 0;
                 employeeIndex[deptIndex]++;
             });
@@ -114,15 +131,13 @@
             $('#departmentsContainer').on('click', '.removeEmployeeButton', function () {
                 var deptIndex = $(this).data('department-index');
                 var empIndex = $(this).data('employee-index');
-                $(`#employee_${deptIndex}_${empIndex}`).remove();
+                $(`#employee_${deptIndex}_${empIndex}`).closest('tr').next('tr').remove(); // Remove the projects container row
+                $(`#employee_${deptIndex}_${empIndex}`).closest('tr').remove(); // Remove the employee row
             });
 
             // Handle remove project button click (event delegation)
             $('#departmentsContainer').on('click', '.removeProjectButton', function () {
-                var deptIndex = $(this).data('department-index');
-                var empIndex = $(this).data('employee-index');
-                var projIndex = $(this).data('project-index');
-                $(`#projectsContainer_${deptIndex}_${empIndex} .project-entry`).eq(projIndex).remove();
+                $(this).closest('.project-entry').remove();
             });
         });
     </script>

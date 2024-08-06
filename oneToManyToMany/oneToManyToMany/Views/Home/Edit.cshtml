@@ -1,7 +1,7 @@
 ﻿@model oneToManyToMany.Models.DepartmentViewModel
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Edit Department";
 }
 
 <h2>Edit Department</h2>
@@ -23,50 +23,53 @@
             </div>
         </div>
 
-        <div id="employees-section">
-            @for (int i = 0; i < Model.Employees.Count; i++)
-            {
-                <div class="employee-panel" id="employee-@i">
-                    <h4>Employee @i</h4>
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.Employees[i].FullName, htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-10">
-                            @Html.EditorFor(m => m.Employees[i].FullName, new { htmlAttributes = new { @class = "form-control" } })
-                            @Html.ValidationMessageFor(m => m.Employees[i].FullName, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="projects-section">
-                        @for (int j = 0; j < Model.Employees[i].Projects.Count; j++)
-                        {
-                            <div class="project-panel" id="project-@i-@j">
-                                <h5>Project @j</h5>
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.Employees[i].Projects[j].ProjectName, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(m => m.Employees[i].Projects[j].ProjectName, new { htmlAttributes = new { @class = "form-control" } })
-                                        @Html.ValidationMessageFor(m => m.Employees[i].Projects[j].ProjectName, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.Employees[i].Projects[j].Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.TextAreaFor(m => m.Employees[i].Projects[j].Description, new { @class = "form-control" })
-                                        @Html.ValidationMessageFor(m => m.Employees[i].Projects[j].Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
+        <h4>Employees and Projects</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Project Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="employees-table">
+                @for (int i = 0; i < Model.Employees.Count; i++)
+                {
+                    var employee = Model.Employees[i];
+                    for (int j = 0; j < employee.Projects.Count; j++)
+                    {
+                        var project = employee.Projects[j];
+                        <tr id="employee-@i-project-@j">
+                            @if (j == 0)
+                            {
+                                <td rowspan="@employee.Projects.Count">
+                                    @Html.EditorFor(m => m.Employees[i].FullName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(m => m.Employees[i].FullName, "", new { @class = "text-danger" })
+                                </td>
+                            }
+                            <td>
+                                @Html.EditorFor(m => m.Employees[i].Projects[j].ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(m => m.Employees[i].Projects[j].ProjectName, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
+                                @Html.TextAreaFor(m => m.Employees[i].Projects[j].Description, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Employees[i].Projects[j].Description, "", new { @class = "text-danger" })
+                            </td>
+                            <td>
                                 <button type="button" class="btn btn-danger remove-project" data-employee-index="@i" data-project-index="@j">Remove Project</button>
-                            </div>
-                        }
-                        <button type="button" class="btn btn-primary add-project" data-employee-index="@i">Add Project</button>
-                    </div>
-
-                    <button type="button" class="btn btn-danger remove-employee" data-employee-index="@i">Remove Employee</button>
-                </div>
-            }
-        </div>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="4">
+                            <button type="button" class="btn btn-primary add-project" data-employee-index="@i">Add Project</button>
+                            <button type="button" class="btn btn-danger remove-employee" data-employee-index="@i">Remove Employee</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
         <button type="button" class="btn btn-primary add-employee">Add Employee</button>
 
@@ -81,66 +84,67 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Function to remove an employee
-            $(document).on('click', '.remove-employee', function () {
+            $(document).on('click', '.remove-employee', function() {
                 var index = $(this).data('employee-index');
-                $('#employee-' + index).remove();
+                // Remove all rows related to the employee
+                $('tr[id^="employee-' + index + '-"]').remove();
             });
 
             // Function to remove a project
-            $(document).on('click', '.remove-project', function () {
+            $(document).on('click', '.remove-project', function() {
                 var empIndex = $(this).data('employee-index');
                 var projIndex = $(this).data('project-index');
-                $('#project-' + empIndex + '-' + projIndex).remove();
+                $('#employee-' + empIndex + '-project-' + projIndex).remove();
             });
 
             // Function to add a new project
-            $(document).on('click', '.add-project', function () {
+            $(document).on('click', '.add-project', function() {
                 var empIndex = $(this).data('employee-index');
-                var projectsSection = $(this).siblings('.projects-section');
-                var projectCount = projectsSection.find('.project-panel').length;
+                var projectsCount = $('tr[id^="employee-' + empIndex + '-project-"]').length;
                 var newProjectHtml = `
-                        <div class="project-panel" id="project-${empIndex}-${projectCount}">
-                            <h5>Project ${projectCount}</h5>
-                            <div class="form-group">
-                                <label for="Employees_${empIndex}__Projects_${projectCount}__ProjectName" class="control-label col-md-2">Project Name</label>
-                                <div class="col-md-10">
-                                    <input type="text" name="Employees[${empIndex}].Projects[${projectCount}].ProjectName" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="Employees_${empIndex}__Projects_${projectCount}__Description" class="control-label col-md-2">Description</label>
-                                <div class="col-md-10">
-                                    <textarea name="Employees[${empIndex}].Projects[${projectCount}].Description" class="form-control"></textarea>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-danger remove-project" data-employee-index="${empIndex}" data-project-index="${projectCount}">Remove Project</button>
-                        </div>
-                    `;
-                projectsSection.append(newProjectHtml);
+                    <tr id="employee-${empIndex}-project-${projectsCount}">
+                        <td>
+                            <input type="text" name="Employees[${empIndex}].Projects[${projectsCount}].ProjectName" class="form-control" />
+                        </td>
+                        <td>
+                            <textarea name="Employees[${empIndex}].Projects[${projectsCount}].Description" class="form-control"></textarea>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-project" data-employee-index="${empIndex}" data-project-index="${projectsCount}">Remove Project</button>
+                        </td>
+                    </tr>
+                `;
+                $('#employees-table').append(newProjectHtml);
             });
 
             // Function to add a new employee
-            $('.add-employee').click(function () {
-                var employeesSection = $('#employees-section');
-                var employeeCount = employeesSection.find('.employee-panel').length;
+            $('.add-employee').click(function() {
+                var employeeCount = $('tr[id^="employee-"]').length / 2; // Assuming each employee has at least one project
                 var newEmployeeHtml = `
-                        <div class="employee-panel" id="employee-${employeeCount}">
-                            <h4>Employee ${employeeCount}</h4>
-                            <div class="form-group">
-                                <label for="Employees_${employeeCount}__FullName" class="control-label col-md-2">Full Name</label>
-                                <div class="col-md-10">
-                                    <input type="text" name="Employees[${employeeCount}].FullName" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="projects-section">
-                                <button type="button" class="btn btn-primary add-project" data-employee-index="${employeeCount}">Add Project</button>
-                            </div>
+                    <tr id="employee-${employeeCount}-project-0">
+                        <td>
+                            <input type="text" name="Employees[${employeeCount}].FullName" class="form-control" />
+                        </td>
+                        <td>
+                            <input type="text" name="Employees[${employeeCount}].Projects[0].ProjectName" class="form-control" />
+                        </td>
+                        <td>
+                            <textarea name="Employees[${employeeCount}].Projects[0].Description" class="form-control"></textarea>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-project" data-employee-index="${employeeCount}" data-project-index="0">Remove Project</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <button type="button" class="btn btn-primary add-project" data-employee-index="${employeeCount}">Add Project</button>
                             <button type="button" class="btn btn-danger remove-employee" data-employee-index="${employeeCount}">Remove Employee</button>
-                        </div>
-                    `;
-                employeesSection.append(newEmployeeHtml);
+                        </td>
+                    </tr>
+                `;
+                $('#employees-table').append(newEmployeeHtml);
             });
         });
     </script>
