@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using oneToManyToMany.Models;
 
 namespace oneToManyToMany.Controllers
 {
@@ -78,67 +79,119 @@ namespace oneToManyToMany.Controllers
             }
             return View(Departments);
         }
+
         public ActionResult Edit(int id)
         {
-            var department = _context.Departments.FirstOrDefault(x => x.DepartmentId == id);
+            var department = _context.Departments
+                .Include(d => d.Employees.Select(e => e.Projects))
+                .FirstOrDefault(d => d.DepartmentId == id);
 
             if (department == null)
             {
                 return HttpNotFound();
             }
 
-            var model = new DepartmentViewModel
+            var departmentViewModel = new DepartmentViewModel
             {
-
                 Name = department.Name,
                 Employees = department.Employees.Select(e => new employeeViewModel
                 {
                     FullName = e.FullName,
                     Projects = e.Projects.Select(p => new ProjectViewModel
                     {
-                        ProjectName = p.ProjectName
+                        ProjectName = p.ProjectName,
+                        Description = p.Description
                     }).ToList()
                 }).ToList()
             };
 
-            return View(model);
+            return View(departmentViewModel);
         }
 
+        // POST: Department/Edit/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, DepartmentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var department = _context.Departments.FirstOrDefault(x => x.DepartmentId == id);
+                var department = _context.Departments
+                    .Include(d => d.Employees.Select(e => e.Projects))
+                    .FirstOrDefault(d => d.DepartmentId == id);
 
-                if (department == null)
+                if (department != null)
                 {
-                    return HttpNotFound();
-                }
+                    department.Name = model.Name;
 
-                department.Name = model.Name;
-
-                // Clear existing employees and add updated ones
-                department.Employees.Clear();
-                foreach (var employeeModel in model.Employees)
-                {
-                    var employee = new Employee
+                    // Update employees
+                    foreach (var employeeModel in model.Employees)
                     {
-                        FullName = employeeModel.FullName,
-                        Projects = employeeModel.Projects.Select(p => new Project
-                        {
-                            ProjectName = p.ProjectName
-                        }).ToList()
-                    };
-                    department.Employees.Add(employee);
-                }
+                        var employee = department.Employees
+                            .FirstOrDefault(e => e.FullName == employeeModel.FullName);
 
-                _context.Entry(department).State = System.Data.Entity.EntityState.Modified;
-                _context.SaveChanges();
-                return RedirectToAction(nameof(Index1));
+                        if (employee != null)
+                        {
+                            // Update projects
+                            foreach (var projectModel in employeeModel.Projects)
+                            {
+                                var project = employee.Projects
+                                    .FirstOrDefault(p => p.ProjectName == projectModel.ProjectName);
+
+                                if (project != null)
+                                {
+                                    project.ProjectName = projectModel.ProjectName;
+                                    project.Description = projectModel.Description;
+                                }
+                                else
+                                {
+                                    employee.Projects.Add(new Project
+                                    {
+                                        ProjectName = projectModel.ProjectName,
+                                        Description = projectModel.Description
+                                    });
+                                }
+                            }
+
+                            // Remove projects not in the updated list
+                            var updatedProjectNames = employeeModel.Projects.Select(p => p.ProjectName).ToList();
+                            var projectsToRemove = employee.Projects.Where(p => !updatedProjectNames.Contains(p.ProjectName)).ToList();
+                            foreach (var project in projectsToRemove)
+                            {
+                                employee.Projects.Remove(project);
+                            }
+                        }
+                        else
+                        {
+                            // Add new employee with projects
+                            department.Employees.Add(new Employee
+                            {
+                                FullName = employeeModel.FullName,
+                                Projects = employeeModel.Projects.Select(p => new Project
+                                {
+                                    ProjectName = p.ProjectName,
+                                    Description = p.Description
+                                }).ToList()
+                            });
+                        }
+                    }
+
+                    // Remove employees not in the updated list
+                    var updatedEmployeeNames = model.Employees.Select(e => e.FullName).ToList();
+                    var employeesToRemove = department.Employees.Where(e => !updatedEmployeeNames.Contains(e.FullName)).ToList();
+                    foreach (var employee in employeesToRemove)
+                    {
+                        department.Employees.Remove(employee);
+                    }
+
+                    _context.Entry(department).State = EntityState.Modified;
+                    _context.SaveChanges();
+                    return RedirectToAction("Index1");
+                }
             }
+
             return View(model);
         }
+
 
 
     }
